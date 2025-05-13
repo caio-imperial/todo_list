@@ -1,0 +1,117 @@
+<style>
+    .form-tarefa {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-tarefa input[type="text"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+    }
+
+    .form-tarefa input[type="checkbox"] {
+      margin-left: 0.5rem;
+    }
+
+    .form-tarefa button {
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+
+    .form-tarefa button:hover {
+      background-color: #0056b3;
+    }
+
+    label {
+      font-size: 0.9rem;
+    }
+
+    .tarefa {
+        border: 1px solid #ddd;
+        border-left: 5px solid #4caf50;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 12px 0;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        font-family: Arial, sans-serif;
+    }
+    
+    .tarefa h3 {
+        margin: 0 0 8px;
+        font-size: 1.2em;
+        color: #333;
+    }
+    
+    .tarefa p {
+        margin: 0 0 8px;
+        color: #555;
+    }
+    
+    .tarefa .status {
+        font-size: 0.9em;
+        color: #fff;
+        background-color: #4caf50;
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    .tarefa.feita {
+        opacity: 0.7;
+        text-decoration: line-through;
+        border-left-color: #999;
+    }
+</style>
+
+<form class="form-tarefa" action="/api/tarefas" method="post">
+    <div>
+        <label for="titulo">Titulo:</label>
+        <input type="text" id="titulo" name="titulo" />
+    </div>
+    <div>
+        <label for="descricao">Descricao:</label>
+        <input type="text" id="descricao" name="descricao"/>
+    </div>
+    <div>
+        <label for="feito">Feito:</label>
+        <input type="checkbox" id="feito" name="feito" value="on"/>
+    </div>
+        <div class="button">
+        <button type="submit">Enviar</button>
+    </div>
+</form>
+
+<div>
+{% for tarefa in tarefas | reverse %}
+<div class="tarefa {% if tarefa.feito %}feita{% endif %}">
+    <h3>{{ tarefa.titulo }}</h3>
+    <p>{{ tarefa.descricao }}</p>
+    <p>{{ tarefa.id }}</p>
+    {% if tarefa.feito %}
+        <span class="status">Feito</span>
+    {% else %}
+        <span class="status" style="background-color: #f44336;">Pendente</span>
+    {% endif %}
+    <form action="/api/tarefas" method="post" style="display: inline;">
+        <input type="hidden" name="id" value="{{ tarefa.id }}">
+        <input type="hidden" name="_method" value="DELETE" />
+        <button type="submit" style="background-color: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Deletar</button>
+    </form>
+    <form action="/api/tarefas" method="post" style="display: inline;">
+        <input type="hidden" name="id" value="{{ tarefa.id }}">
+        <input type="hidden" name="_method" value="PUT" />
+        <button type="submit" style="background-color: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Alterar status</button>
+    </form>
+</div>
+{% endfor %}
+</div>
